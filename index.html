@@ -5,14 +5,24 @@
   <meta charset="UTF-8" />
   <title>Download Excel File</title>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    #loading {
+      display: none;
+      color: green;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 
 <body>
   <h1>Download Excel File from Azure</h1>
   <button id="download-btn">Download Excel</button>
+  <p id="loading">⏳ Downloading, please wait...</p>
 
   <script>
     $('#download-btn').on('click', function () {
+      $('#loading').show();
+
       $.ajax({
         url: 'download.php', // call your PHP backend
         method: 'GET',
@@ -20,6 +30,8 @@
           responseType: 'blob'
         },
         success: function (data) {
+          $('#loading').hide();
+
           const blob = new Blob([data], {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           });
@@ -31,6 +43,7 @@
           window.URL.revokeObjectURL(url);
         },
         error: function () {
+          $('#loading').hide();
           alert('Download failed.');
         }
       });
